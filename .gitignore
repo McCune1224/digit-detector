@@ -1,4 +1,9 @@
 # Byte-compiled / optimized / DLL files
+
+
+#Binary Training Model Export
+*.sav
+
 __pycache__/
 *.py[cod]
 *$py.class
