@@ -30,6 +30,8 @@ BUTTON_BACKGROUND_COLOR = "#EFEFEF"
 BUTTON_FOREGROUND_COLOR = "#000000"
 
 
+FONT_STYLE = ("Courier", 25, "bold")
+
 
 # ====================================================================================================
 
@@ -94,7 +96,7 @@ def predict_drawing(rfc, canvas):
 
     # Hard to see without having to rescale tkinter GUI, so printing to terminal as well for debugging
     print(f"Prediction is {drawing_prediction[0]}")
-    label4.configure(text=f"Prediction is {drawing_prediction[0]}")
+    label4.configure(text=f"Prediction is {drawing_prediction[0]}", font=FONT_STYLE)
 
 
 def draw_handwriting(event):
@@ -141,14 +143,14 @@ if __name__ == "__main__":
 
     #Top of GUI displays accuracy score
     label1 = tk.Label(
-        text=f"RFC Accuracy: {round((100*accuracy_score), 2)}%", bg=BUTTON_BACKGROUND_COLOR, fg="#000000")
+        text=f"RFC Accuracy: {round((100*accuracy_score), 2)}%", bg=BUTTON_BACKGROUND_COLOR, fg="#000000", font=FONT_STYLE)
     label1.grid(row=0, column=0, sticky="n")
 
     # Button for calling the predict_drawing function
     # had to put in Lambda since by default this acts more of a delegate which means 
     # no adding arguments to our function in 'command=func', but lambda lets me work around that :)
     label2 = tk.Button(text="Submit", command=lambda: predict_drawing(
-        handwriting_model, CANVAS_GRID), bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR)
+        handwriting_model, CANVAS_GRID), bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR, font=FONT_STYLE)
     label2.grid(row=1, column=0, sticky="n")
 
     cvs_drawspace = tk.Canvas(width=CANVAS_LENGTH, height=CANVAS_LENGTH, bg='white', cursor='tcross',
@@ -159,11 +161,11 @@ if __name__ == "__main__":
 
 
     label3 = tk.Button(text="Clear Canvas", command=clear_drawing,
-                       bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR)
+                       bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR, font=FONT_STYLE)
     label3.grid(row=3, column=0, sticky="n")
 
     label4 = tk.Label(
-        text=f"Prediction: ", bg=BUTTON_BACKGROUND_COLOR, fg=BUTTON_FOREGROUND_COLOR)
+        text=f"Prediction: ", bg=BUTTON_BACKGROUND_COLOR, fg=BUTTON_FOREGROUND_COLOR, font=FONT_STYLE)
     label4.grid(row=1, column=2, sticky="n")
 
     window.resizable(False, False)

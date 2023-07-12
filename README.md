@@ -7,4 +7,4 @@ Python GUI Application for detecting the written digit provided by the user.
 
 
 
-# Video Demonstration
+# Visual Example
