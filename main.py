@@ -32,7 +32,7 @@ def _canvas_grid_to_1d_df(user_drawing_matrix: np.ndarray):
 
     # TODO
     # 1. Downscale drawing array dimensions from 140x140 to 28x28
-    # one liner to shrink array down by factor of 5 (which is okay since 140/5 = 28)
+    # currently using a janky one liner to shrink array down by factor of 5 (which is okay since 140/5 = 28)
     downscaled_drawing_matrix = user_drawing_matrix[::5, ::5]
 
     # 2. flatten drawing array 28x28 array into 1d array

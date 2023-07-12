@@ -13,33 +13,36 @@ from sklearn.model_selection import train_test_split
 
 
 def _save_pickled_model(rfc: RandomForestClassifier, accuracy):
-    """Helper Function to use the pickle to serialize and save machine model to disk to save time while testing by not having
-       to retrain model on every rerun of the program.
+    """Helper Function to use the pickle to serialize and save machine model to
+    disk to save time while testing by not having
+    to retrain model on every rerun of the program.
 
-       Model Filename: 'finalized_model.sav'
-       Accuracy Filename: 'accuracy.txt'
-       """
+    Model Filename: 'finalized_model.sav'
+    Accuracy Filename: 'accuracy.txt'
+    """
     # save the model to disk
-    pickle.dump(rfc, open('finalized_model.sav', 'wb'))
+    pickle.dump(rfc, open("finalized_model.sav", "wb"))
     print("Stored RFC Model inside of 'finalized_model.sav'")
 
-    #save accuracy score to disk as well
-    with open('accuracy.txt', 'w') as f:
+    # save accuracy score to disk as well
+    with open("accuracy.txt", "w") as f:
         f.write(str(accuracy))
     print("Stored RFC Model Accuracy Score inside of 'accuracy.txt'")
 
-def _load_pickled_model():
-    """Helper Function to use the pickle to serialize and save machine model to disk to save time while testing by not having
-       to retrain model on every rerun of the program.
 
-       Model Filename: 'finalized_model.sav'
-       Accuracy Filename: 'accuracy.txt'
-       """
+def _load_pickled_model():
+    """Helper Function to use the pickle to serialize and save machine model to
+    disk to save time while testing by not having
+    to retrain model on every rerun of the program.
+
+    Model Filename: 'finalized_model.sav'
+    Accuracy Filename: 'accuracy.txt'
+    """
     # load the model from disk
-    loaded_model = pickle.load(open('finalized_model.sav', 'rb'))
+    loaded_model = pickle.load(open("finalized_model.sav", "rb"))
     print("Loaded Serialized Model 'finalized_model.sav'")
 
-    with open('accuracy.txt', 'r') as f:
+    with open("accuracy.txt", "r") as f:
         accuracy = f.readlines()
     print("Loaded Serialized Model Accuracy 'accuracy.txt'")
 
@@ -54,7 +57,7 @@ def _load_pickled_model():
 
 def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
     """
-    Primary Function for creating our Random Forest Classifier that we can use for 
+    Primary Function for creating our Random Forest Classifier that we can use for
     predictions and prototyping.
 
     Args:
@@ -66,7 +69,7 @@ def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
 
     # For the sake of saving compile time while testing and avoiding wasted time training the model every
     # save the model to file and then just load that next time the file is called
-    if os.path.isfile('finalized_model.sav'):
+    if os.path.isfile("finalized_model.sav"):
         handwriting_model, model_accuracy = _load_pickled_model()
         return (handwriting_model, model_accuracy)
     else:
@@ -89,7 +92,8 @@ def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
         # Model Creation
         print("Running RandomForestClassifier...")
         rfc = RandomForestClassifier(
-            random_state=1, n_estimators=150, criterion="entropy")
+            random_state=1, n_estimators=150, criterion="entropy"
+        )
         rfc.fit(X_train, y_train)
         print("Model is ready for use")
 
@@ -101,19 +105,18 @@ def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
         forest_accuracy = accuracy_score(y_test, y_pred)
         print(forest_accuracy)
 
-        #Just for debug/additional information purposes
-        if print_results == True:
-            result = pd.DataFrame(data=zip(y_test, y_pred), columns=[
-                                  "Actual", "RFC Prediction"])
+        # Just for debug/additional information purposes
+        if print_results:
+            result = pd.DataFrame(
+                data=zip(y_test, y_pred), columns=["Actual", "RFC Prediction"]
+            )
             print(result.head())
 
         _save_pickled_model(rfc, forest_accuracy)
         return (rfc, forest_accuracy)
 
 
-
 # ====================================================================================================
-
 
 if __name__ == "__main__":
     create_rfc_model(filename=sys.argv[1], print_results=True)

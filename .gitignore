@@ -132,3 +132,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Dataset and training data 
+*.csv
+*.zip
+
+
+# Media files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
