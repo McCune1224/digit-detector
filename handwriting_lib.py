@@ -22,12 +22,12 @@ def _save_pickled_model(rfc: RandomForestClassifier, accuracy):
     """
     # save the model to disk
     pickle.dump(rfc, open("finalized_model.sav", "wb"))
-    print("Stored RFC Model inside of 'finalized_model.sav'")
+    print("Wrote model to'finalized_model.sav'")
 
     # save accuracy score to disk as well
     with open("accuracy.txt", "w") as f:
         f.write(str(accuracy))
-    print("Stored RFC Model Accuracy Score inside of 'accuracy.txt'")
+    print("Wrote accuracy score to 'accuracy.txt'")
 
 
 def _load_pickled_model():
@@ -55,13 +55,14 @@ def _load_pickled_model():
 # ====================================================================================================
 
 
-def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
+def create_rfc_model(csv_dataset_path: str, print_results: bool = False) -> tuple:
     """
     Primary Function for creating our Random Forest Classifier that we can use for
     predictions and prototyping.
 
     Args:
         filename (str): The Path/Name of a CSV file for training/testing our model on.
+        print_results (bool, optional): Whether or not to print the results of the model (debug && verbose purposes). Defaults to False.
 
     Returns:
         tuple: Index 0 is the Random Forest Classifier Model & Index 1 is a float with model accuracy.
@@ -69,15 +70,15 @@ def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
 
     # For the sake of saving compile time while testing and avoiding wasted time training the model every
     # save the model to file and then just load that next time the file is called
-    if os.path.isfile("finalized_model.sav"):
+    if os.path.isfile("finalized_model.sav") and os.path.isfile("accuracy.txt"):
         handwriting_model, model_accuracy = _load_pickled_model()
         return (handwriting_model, model_accuracy)
     else:
 
-        if filename[-3:] == "csv":
-            mnist_df = pd.DataFrame(pd.read_csv(f"{filename}"))
+        if csv_dataset_path[-3:] == "csv":
+            mnist_df = pd.DataFrame(pd.read_csv(f"{csv_dataset_path}"))
         else:
-            mnist_df = pd.DataFrame(pd.read_csv(f"{filename}.csv"))
+            mnist_df = pd.DataFrame(pd.read_csv(f"{csv_dataset_path}.csv"))
         print(mnist_df.shape)
 
         # feature
@@ -119,4 +120,7 @@ def create_rfc_model(filename: str, print_results: bool = False) -> tuple:
 # ====================================================================================================
 
 if __name__ == "__main__":
-    create_rfc_model(filename=sys.argv[1], print_results=True)
+    if len(sys.argv) < 2:
+        print("Please provide a CSV file to train the model on")
+        sys.exit(1)
+    create_rfc_model(csv_dataset_path=sys.argv[1], print_results=True)

@@ -137,6 +137,7 @@ dmypy.json
 # Dataset and training data 
 *.csv
 *.zip
+accuracy.txt
 
 
 # Media files

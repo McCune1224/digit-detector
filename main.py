@@ -6,12 +6,32 @@ import pandas as pd
 # Library for separating actual Random Forest Classifier from GUI
 import handwriting_lib
 
-# Constants for Defining Black & White Pixel
+# CONSTANTS SETTINGS FOR GUI ELEMENTS
+# ====================================================================================================
+
+# GUI Window 
+# TODO make this resizable by a flag and allow user to resize window
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+
+
+
 BLACK_PIXEL = np.full((1, 3), 0, dtype=np.uint8)
 WHITE_PIXEL = np.full((1, 3), 255, dtype=np.uint8)
+# Canvas length should scale with Window Width and Height but keep it divisible by 28
+CANVAS_LENGTH = 140 
+CANVAS_GRID = np.full((CANVAS_LENGTH, CANVAS_LENGTH, 3), BLACK_PIXEL, dtype=np.uint8) # Ideally should scale to the same size as the mnist dataset (28x28)
 
-# Internal Tracking of User's Canvas Drawing as a np array
-CANVAS_ARRAY = np.full((140, 140, 3), BLACK_PIXEL, dtype=np.uint8)
+
+
+#Colors
+CANVAS_BACKGROUND_COLOR = "#AFAFAF" 
+BUTTON_BACKGROUND_COLOR = "#EFEFEF"
+BUTTON_FOREGROUND_COLOR = "#000000"
+
+
+
+# ====================================================================================================
 
 
 def _canvas_grid_to_1d_df(user_drawing_matrix: np.ndarray):
@@ -85,14 +105,14 @@ def draw_handwriting(event):
     y = event.y
     r = 2
     cvs_drawspace.create_oval(x - r, y - r, x + r+1, y + r+1, fill='black')
-    CANVAS_ARRAY[y-2:y+3, x-2:x+3] = WHITE_PIXEL
+    CANVAS_GRID[y-2:y+3, x-2:x+3] = WHITE_PIXEL
 
 
 def clear_drawing():
     ''' Clears the drawing canvas and internal array. '''
 
     cvs_drawspace.delete('all')  # drawing canvas
-    CANVAS_ARRAY[:] = BLACK_PIXEL  # internal representation of drawing
+    CANVAS_GRID[:] = BLACK_PIXEL  # internal representation of drawing
 
 
 if __name__ == "__main__":
@@ -111,32 +131,27 @@ if __name__ == "__main__":
 
     # Create the master object
     window = tk.Tk()
-    window.columnconfigure(0, minsize=200)
-    window.rowconfigure([0, 1], minsize=100)
+    window.columnconfigure(0, minsize=300)
+    window.rowconfigure([0, 1], minsize=200)
     window.configure(bg="#534D56")
     window.focusmodel
 
     # hard coded accuracy for now while debugging
 
-    if accuracy_score >= .90:
-        score_background_color = "#DAF7A6"
-    else:
-        score_background_color = "#FF5733"
 
     #Top of GUI displays accuracy score
     label1 = tk.Label(
-        text=f"RFC Accuracy: {round((100*accuracy_score), 2)}%", bg=score_background_color)
+        text=f"RFC Accuracy: {round((100*accuracy_score), 2)}%", bg=BUTTON_BACKGROUND_COLOR, fg="#000000")
     label1.grid(row=0, column=0, sticky="n")
 
     # Button for calling the predict_drawing function
     # had to put in Lambda since by default this acts more of a delegate which means 
     # no adding arguments to our function in 'command=func', but lambda lets me work around that :)
     label2 = tk.Button(text="Submit", command=lambda: predict_drawing(
-        handwriting_model, CANVAS_ARRAY), bg="#656176", foreground="#F8F1FF")
+        handwriting_model, CANVAS_GRID), bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR)
     label2.grid(row=1, column=0, sticky="n")
 
-    #Actual Canvas logic and creation, mostly done by Tallman with very minor GUI tweaks on my end
-    cvs_drawspace = tk.Canvas(width=140, height=140, bg='white', cursor='tcross',
+    cvs_drawspace = tk.Canvas(width=CANVAS_LENGTH, height=CANVAS_LENGTH, bg='white', cursor='tcross',
                               highlightthickness=1, highlightbackground='orange')
     cvs_drawspace.grid(row=2, column=0, sticky="n")
     cvs_drawspace.bind('<B1-Motion>', draw_handwriting)
@@ -144,11 +159,11 @@ if __name__ == "__main__":
 
 
     label3 = tk.Button(text="Clear Canvas", command=clear_drawing,
-                       bg="#656176", foreground="#F8F1FF")
+                       bg=BUTTON_BACKGROUND_COLOR, foreground=BUTTON_FOREGROUND_COLOR)
     label3.grid(row=3, column=0, sticky="n")
 
     label4 = tk.Label(
-        text=f"Prediction: ", bg=score_background_color)
+        text=f"Prediction: ", bg=BUTTON_BACKGROUND_COLOR, fg=BUTTON_FOREGROUND_COLOR)
     label4.grid(row=1, column=2, sticky="n")
 
     window.resizable(False, False)
